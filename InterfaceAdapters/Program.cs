@@ -7,6 +7,7 @@ using Infrastructure;
 using Infrastructure.Repositories;
 using Infrastructure.Resolvers;
 using Microsoft.EntityFrameworkCore;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +21,7 @@ builder.Services.AddDbContext<AbsanteeContext>(opt =>
 
 //Services
 builder.Services.AddTransient<UserService>();
+builder.Services.AddScoped<IMessagePublisher, MassTransitPublisher>();
 
 //Repositories
 builder.Services.AddTransient<IUserRepository, UserRepositoryEF>();
@@ -38,6 +40,17 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.CreateMap<User, UserDTO>();
 });
 
+// MassTransit
+builder.Services.AddMassTransit(x =>
+{
+    x.AddConsumer<UserCreatedConsumer>();
+
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        cfg.Host("rabbitmq://localhost");
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

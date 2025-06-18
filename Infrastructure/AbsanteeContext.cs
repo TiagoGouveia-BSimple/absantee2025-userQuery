@@ -15,7 +15,8 @@ namespace Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserDataModel>();
+            modelBuilder.Entity<UserDataModel>()
+                .OwnsOne(a => a.PeriodDateTime);
 
             base.OnModelCreating(modelBuilder);
         }
