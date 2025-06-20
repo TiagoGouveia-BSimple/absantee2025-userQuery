@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Application.DTO;
 using AutoMapper;
 using Domain.Factory;
@@ -36,7 +32,7 @@ public class UserService
 
         return _mapper.Map<User, UserDTO>(user);
     }
-    
+
     public async Task<IEnumerable<IUser>> GetAll()
     {
         var User = await _userRepository.GetAllAsync();
@@ -67,7 +63,7 @@ public class UserService
         return await _userRepository.Exists(Id);
     }
 
-    public async Task SubmitAsync(Guid id, string names, string surnames, string email, PeriodDateTime periodDateTime)
+    public async Task CreateAsync(Guid id, string names, string surnames, string email, PeriodDateTime periodDateTime)
     {
         var visitor = new UserDataModel()
         {

@@ -16,16 +16,6 @@ public class UserController : ControllerBase
         _userService = userService;
     }
 
-    // Post: api/users
-    [HttpPost]
-    public async Task<ActionResult<UserDTO>> PostUsers(UserDTO userDTO)
-    {
-        {
-            var userDTOResult = await _userService.Add(userDTO);
-            return Ok(userDTOResult);
-        }
-    }
-
     // Get: api/users
     [HttpGet]
     public async Task<ActionResult<UserDTO>> GetUsers()
@@ -33,16 +23,4 @@ public class UserController : ControllerBase
         var result = await _userService.GetAll();
         return Ok(result);
     }
-
-    // Patch: api/users/id/activation
-    [HttpPatch("{id}/updateactivation")]
-    public async Task<ActionResult<UserDTO>> UpdateActivation(Guid id, [FromBody] ActivationDTO activationPeriodDTO)
-    {
-        if (!await _userService.Exists(id))
-            return NotFound();
-
-        var result = await _userService.UpdateActivation(id, activationPeriodDTO);
-        return Ok(result);
-    }
-
 }
