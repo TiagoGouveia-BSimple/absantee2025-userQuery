@@ -1,5 +1,5 @@
 using Application.Services;
-using InterfaceAdapters.Messages;
+using Domain.Messages;
 using MassTransit;
 
 public class UserCreatedConsumer : IConsumer<UserCreatedMessage>
