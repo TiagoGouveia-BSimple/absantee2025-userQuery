@@ -1,5 +1,6 @@
 using Application.DTO;
 using Application.IPublishers;
+using Application.IService;
 using AutoMapper;
 using Domain.Factory;
 using Domain.Interfaces;
@@ -8,7 +9,8 @@ using Domain.Models;
 using Infrastructure.DataModel;
 namespace Application.Services;
 
-public class UserService
+
+public class UserService : IUserService
 {
     private IUserRepository _userRepository;
     private IUserFactory _userFactory;
@@ -65,9 +67,9 @@ public class UserService
     }
 
     public async Task AddConsumed(Guid id, string names, string surnames, string email, PeriodDateTime periodDateTime)
-    {   
-        if(await Exists(id)) return;
-    
+    {
+        if (await Exists(id)) return;
+
         var visitor = new UserDataModel()
         {
             Id = id,
