@@ -8,6 +8,7 @@ using Infrastructure.Repositories;
 using Infrastructure.Resolvers;
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
+using Application.IPublishers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,7 +54,10 @@ builder.Services.AddMassTransit(x =>
             h.Password("guest");
         });
 
-        cfg.ConfigureEndpoints(context);
+        cfg.ReceiveEndpoint("userCreatedQuery", conf =>
+        {
+            conf.ConfigureConsumer<UserCreatedConsumer>(context);
+        });
     });
 });
 
