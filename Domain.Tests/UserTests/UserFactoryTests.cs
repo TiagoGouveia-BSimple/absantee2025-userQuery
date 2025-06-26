@@ -1,73 +1,69 @@
-// using Domain.Factory;
-// using Domain.Interfaces;
-// using Domain.IRepository;
-// using Domain.Models;
-// using Domain.Visitor;
-// using Moq;
+using Domain.Factory;
+using Domain.Interfaces;
+using Domain.IRepository;
+using Domain.Models;
+using Domain.Visitor;
+using Moq;
 
-// namespace Domain.Tests.UserTests;
+namespace Domain.Tests.UserTests;
 
-// public class Factory
-// {
+public class Factory
+{
+    [Fact]
+    public async Task WhenCreatingUser_ThenUserIsCreated()
+    {
+        //arrange
+        string email = "test@email.com";
 
-//     [Fact]
-//     public async Task WhenCreatingUser_ThenUserIsCreated()
-//     {
-//         //arrange
-//         string email = "test@email.com";
+        var userRepository = new Mock<IUserRepository>();
+        userRepository.Setup(repo => repo.GetByEmailAsync(email)).ReturnsAsync((Guid?)null);
 
-//         var userRepository = new Mock<IUserRepository>();
-//         userRepository.Setup(repo => repo.GetByEmailAsync(email)).ReturnsAsync((IUser?)null);
+        var userFactory = new UserFactory(userRepository.Object);
 
-//         var userFactory = new UserFactory(userRepository.Object);
+        //act
+        var result = await userFactory.Create("John", "Doe", email, DateTime.MaxValue);
 
-//         //act
-//         var result = await userFactory.Create("John", "Doe", email, DateTime.MaxValue);
+        Assert.NotNull(result);
+    }
 
-//         Assert.NotNull(result);
+    [Fact]
+    public async Task WhenCreatingUserWithAnRepeatedEmail_ThenThrowsArgumentException()
+    {
+        //arrange
+        string email = "test@email.com";
 
-//     }
+        var userRepository = new Mock<IUserRepository>();
+        userRepository.Setup(repo => repo.GetByEmailAsync(email)).ReturnsAsync(It.IsAny<Guid>());
 
-//     [Fact]
-//     public async Task WhenCreatingUserWithAnRepeatedEmail_ThenThrowsArgumentException()
-//     {
-//         //arrange
-//         string email = "test@email.com";
-//         var existingUser = new Mock<User>();
+        UserFactory userFactory = new UserFactory(userRepository.Object);
 
-//         var userRepository = new Mock<IUserRepository>();
-//         userRepository.Setup(repo => repo.GetByEmailAsync(email)).ReturnsAsync(existingUser.Object);
+        //Assert
+        ArgumentException exception = await Assert.ThrowsAsync<ArgumentException>(() =>
+                    // Act
+                    userFactory.Create("John", "Doe", email, DateTime.MaxValue));
 
-//         UserFactory userFactory = new UserFactory(userRepository.Object);
+        Assert.Equal("An user with this email already exists.", exception.Message);
+    }
 
-//         //Assert
-//         ArgumentException exception = await Assert.ThrowsAsync<ArgumentException>(() =>
-//                     // Act
-//                     userFactory.Create("John", "Doe", email, DateTime.MaxValue));
+    [Fact]
+    public void WhenCreatingUserDomainFromDataModel_ThenUserIsCreated()
+    {
+        //Arrange
+        var userVisitor = new Mock<IUserVisitor>();
 
-//         Assert.Equal("An user with this email already exists.", exception.Message);
-//     }
+        userVisitor.Setup(u => u.Id).Returns(Guid.NewGuid());
+        userVisitor.Setup(u => u.Names).Returns("John");
+        userVisitor.Setup(u => u.Surnames).Returns("Doe");
+        userVisitor.Setup(u => u.Email).Returns("john.doe@email.com");
+        userVisitor.Setup(u => u.PeriodDateTime).Returns(new PeriodDateTime(DateTime.Now.AddDays(-10), DateTime.Now.AddYears(1)));
 
-//     [Fact]
-//     public void WhenCreatingUserDomainFromDataModel_ThenUserIsCreated()
-//     {
-//         //Arrange
-//         var userVisitor = new Mock<IUserVisitor>();
+        var userRepository = new Mock<IUserRepository>();
+        var userFactory = new UserFactory(userRepository.Object);
 
-//         userVisitor.Setup(u => u.Id).Returns(Guid.NewGuid());
-//         userVisitor.Setup(u => u.Names).Returns("John");
-//         userVisitor.Setup(u => u.Surnames).Returns("Doe");
-//         userVisitor.Setup(u => u.Email).Returns("john.doe@email.com");
-//         userVisitor.Setup(u => u.PeriodDateTime).Returns(new PeriodDateTime(DateTime.Now.AddDays(-10), DateTime.Now.AddYears(1)));
+        //Act
+        var result = userFactory.Create(userVisitor.Object);
 
-//         var userRepository = new Mock<IUserRepository>();
-//         var userFactory = new UserFactory(userRepository.Object);
-
-//         //Act
-//         var result = userFactory.Create(userVisitor.Object);
-
-//         //Assert
-//         Assert.NotNull(result);
-//     }
-
-// }
+        //Assert
+        Assert.NotNull(result);
+    }
+}
