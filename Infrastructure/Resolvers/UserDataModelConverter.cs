@@ -1,11 +1,12 @@
 using AutoMapper;
 using Domain.Factory;
+using Domain.Interfaces;
 using Domain.Models;
 using Infrastructure.DataModel;
 
 namespace Infrastructure.Resolvers;
 
-public class UserDataModelConverter : ITypeConverter<UserDataModel, User>
+public class UserDataModelConverter : ITypeConverter<UserDataModel, IUser>
 {
     private readonly IUserFactory _UserFactory;
 
@@ -14,12 +15,13 @@ public class UserDataModelConverter : ITypeConverter<UserDataModel, User>
         _UserFactory = UserFactory;
     }
 
-    public User Convert(UserDataModel source, User destination, ResolutionContext context)
+    public IUser Convert(UserDataModel source, IUser destination, ResolutionContext context)
     {
-        return _UserFactory.Create(source);
+        var res = _UserFactory.Create(source);
+        return res;
     }
 
-    public bool UpdateDataModel(UserDataModel userDataModel, User userDomain)
+    public bool UpdateDataModel(UserDataModel userDataModel, IUser userDomain)
 
     {
         userDataModel.Id = userDomain.Id;

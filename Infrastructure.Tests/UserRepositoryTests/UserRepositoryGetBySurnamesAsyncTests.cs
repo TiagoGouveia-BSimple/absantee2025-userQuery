@@ -51,22 +51,23 @@ public class UserRepositoryGetBySurnamesAsyncTests
         var userMock = new Mock<IUser>();
         userMock.Setup(u => u.Id).Returns(user1.Id);
         userMock.Setup(u => u.Names).Returns(user1.Names);
+        userMock.Setup(u => u.Surnames).Returns(user1.Surnames);
 
         context.Users.AddRange(user1, user2);
         await context.SaveChangesAsync();
 
         var userFactoryMock = new Mock<IUserFactory>();
         userFactoryMock.Setup(f => f.Create(user1)).Returns(
-            new User(user1.Id, user1.Names, user1.Surnames, user1.Email, user1.PeriodDateTime));
+            userMock.Object);
         userFactoryMock.Setup(f => f.Create(user2)).Returns(
-            new User(user2.Id, user2.Names, user2.Surnames, user2.Email, user2.PeriodDateTime));
+            userMock.Object);
 
         var converter = new UserDataModelConverter(userFactoryMock.Object);
 
         var mockMapper = new MapperConfiguration(cfg =>
         {
-            cfg.CreateMap<User, UserDataModel>();
-            cfg.CreateMap<UserDataModel, User>().ConvertUsing(converter);
+            cfg.CreateMap<IUser, UserDataModel>();
+            cfg.CreateMap<UserDataModel, IUser>().ConvertUsing(converter);
         });
         var mapper = mockMapper.CreateMapper();
 

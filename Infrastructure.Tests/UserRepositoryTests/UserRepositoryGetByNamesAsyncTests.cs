@@ -65,8 +65,8 @@ public class UserRepositoryGetByNamesAsyncTests {
 
         var mockMapper = new MapperConfiguration(cfg =>
         {
-            cfg.CreateMap<User, UserDataModel>();
-            cfg.CreateMap<UserDataModel, User>().ConvertUsing(converter);
+            cfg.CreateMap<IUser, UserDataModel>();
+            cfg.CreateMap<UserDataModel, IUser>().ConvertUsing(converter);
         });
         var mapper = mockMapper.CreateMapper();
 

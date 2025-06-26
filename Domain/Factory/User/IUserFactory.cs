@@ -6,6 +6,6 @@ namespace Domain.Factory;
 
 public interface IUserFactory
 {
-    public Task<User> Create(string names, string surnames, string email, DateTime deactivationDate);
-    public User Create(IUserVisitor userVisitor);
+    public Task<IUser> Create(string names, string surnames, string email, DateTime deactivationDate);
+    public IUser Create(IUserVisitor userVisitor);
 }
