@@ -9,6 +9,7 @@ using Infrastructure.Resolvers;
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using Application.IPublishers;
+using Application.IService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +22,7 @@ builder.Services.AddDbContext<AbsanteeContext>(opt =>
     );
 
 //Services
-builder.Services.AddTransient<UserService>();
+builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddScoped<IMessagePublisher, MassTransitPublisher>();
 
 //Repositories
@@ -66,6 +67,9 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSwaggerGen();
 
+// read env variables for connection string
+builder.Configuration.AddEnvironmentVariables();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -88,6 +92,12 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AbsanteeContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();
 
