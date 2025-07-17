@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 
 namespace Application.DTO;
 
-public record UserDTO
+public record CreateUserDTO
 {
     public string Names { get; set; }
     public string Surnames { get; set; }
     public string Email { get; set; }
     public DateTime FinalDate { get; set; }
-    public UserDTO()
+    public CreateUserDTO()
     {
     }
 }

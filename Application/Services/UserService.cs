@@ -25,7 +25,7 @@ public class UserService : IUserService
         _publisher = publisher;
     }
 
-    public async Task<UserDTO> Add(UserDTO userDTO)
+    public async Task<UserDTO> Add(CreateUserDTO userDTO)
     {
         var user = await _userFactory.Create(userDTO.Names, userDTO.Surnames, userDTO.Email, userDTO.FinalDate);
         await _userRepository.AddAsync(user);
