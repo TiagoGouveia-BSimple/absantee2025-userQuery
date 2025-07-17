@@ -36,16 +36,19 @@ public class UserService : IUserService
         return _mapper.Map<IUser, UserDTO>(user);
     }
 
-    public async Task<IEnumerable<IUser>> GetAll()
+    public async Task<IEnumerable<UserDTO>> GetAll()
     {
         var User = await _userRepository.GetAllAsync();
-        return User;
+        return User.Select(_mapper.Map<IUser, UserDTO>);
     }
 
-    public async Task<IUser?> GetById(Guid Id)
+    public async Task<UserDTO?> GetById(Guid Id)
     {
         var User = await _userRepository.GetByIdAsync(Id);
-        return User;
+
+        if (User == null) return null;
+
+        return _mapper.Map<IUser, UserDTO>(User);
     }
 
     public async Task<UserDTO?> UpdateActivation(Guid Id, ActivationDTO activationDTO)
