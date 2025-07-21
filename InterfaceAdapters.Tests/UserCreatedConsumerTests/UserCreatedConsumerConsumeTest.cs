@@ -7,7 +7,7 @@ using MassTransit;
 using Moq;
 using Xunit;
 
-namespace InterfaceAdapters.IntegrationTests.UserCreatedConsumerTests;
+namespace InterfaceAdapters.Tests.UserCreatedConsumerTests;
 
 public class UserCreatedConsumerConsumeTest
 {

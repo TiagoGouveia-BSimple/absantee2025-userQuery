@@ -1,8 +1,9 @@
 using Application.IService;
+using InterfaceAdapters.Controllers;
 using Moq;
 using Xunit;
 
-namespace InterfaceAdapters.IntegrationTests.UserCreatedConsumerTests;
+namespace InterfaceAdapters.Tests.UserControllerTests;
 
 public class ConstructorTest
 {
@@ -13,7 +14,7 @@ public class ConstructorTest
         var serviceMock = new Mock<IUserService>();
 
         // Act
-        var consumer = new UserCreatedConsumer(serviceMock.Object);
+        var controller = new UserController(serviceMock.Object);
 
         // Assert
     }

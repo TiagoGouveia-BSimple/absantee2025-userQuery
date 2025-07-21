@@ -16,9 +16,17 @@ public class UserController : ControllerBase
 
     // Get: api/users
     [HttpGet]
-    public async Task<ActionResult<UserDTO>> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserDTO>>> GetUsers()
     {
         var result = await _userService.GetAll();
+        return Ok(result);
+    }
+
+    // Get: api/users/{id}
+    [HttpGet("{id}")]
+    public async Task<ActionResult<UserDTO>> GetUserById(Guid id)
+    {
+        var result = await _userService.GetById(id);
         return Ok(result);
     }
 }
