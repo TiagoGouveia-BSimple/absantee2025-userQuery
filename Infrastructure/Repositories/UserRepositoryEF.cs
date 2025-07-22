@@ -123,7 +123,6 @@ public class UserRepositoryEF : GenericRepositoryEF<IUser, User, UserDataModel>,
         await _context.SaveChangesAsync();
         var user = _mapper.Map<UserDataModel, IUser>(userDataModel);
         return user;
-
     }
 
     public async Task<IUser?> UpdateUser(IUser user)
