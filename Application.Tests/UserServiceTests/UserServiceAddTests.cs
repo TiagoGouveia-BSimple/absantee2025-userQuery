@@ -67,5 +67,15 @@ public class UserServiceTests
         Assert.Equal(expectedUserDto.Names, result.Names);
         Assert.Equal(expectedUserDto.Surnames, result.Surnames);
         Assert.Equal(expectedUserDto.Email, result.Email);
+
+        userRepositoryMock.Verify(r => r.AddAsync(userDomainMock.Object));
+        userRepositoryMock.Verify(r => r.SaveChangesAsync());
+        publisherMock.Verify(p => p.PublishCreatedUserMessageAsync(
+            userDomainMock.Object.Id,
+            userDomainMock.Object.Names,
+            userDomainMock.Object.Surnames,
+            userDomainMock.Object.Email,
+            userDomainMock.Object.PeriodDateTime
+        ));
     }
 }
