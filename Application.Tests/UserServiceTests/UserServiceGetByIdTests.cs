@@ -9,10 +9,10 @@ using Moq;
 
 namespace Application.Tests.UserServiceTests;
 
-public class UserServiceAddTests
+public class UserServiceGetByIdTests
 {
     [Fact]
-    public async Task WhenMethodIsCalled_ThenReturnListOfUsers()
+    public async Task WhenMethodIsCalledWithValidId_ThenReturnUser()
     {
         // Arrange
         var userRepositoryMock = new Mock<IUserRepository>();
@@ -30,9 +30,8 @@ public class UserServiceAddTests
         userDomainMock.SetupGet(u => u.PeriodDateTime).Returns(period);
 
 
-        userRepositoryMock.Setup(r => r.GetAllAsync())
-            .ReturnsAsync(new List<IUser> { userDomainMock.Object });
-
+        userRepositoryMock.Setup(r => r.GetByIdAsync(userId))
+            .ReturnsAsync(userDomainMock.Object );
 
         var userService = new UserService(
             userRepositoryMock.Object,
@@ -41,15 +40,13 @@ public class UserServiceAddTests
         );
 
         // Act
-        var result = await userService.GetAll();
+        var result = await userService.GetById(userId);
 
         // Assert
-        Assert.Single(result);
-        var resultUser = result.First();
-        Assert.Equal(userId, resultUser.Id);
-        Assert.Equal("John", resultUser.Names);
-        Assert.Equal("Doe", resultUser.Surnames);
-        Assert.Equal("john@example.com", resultUser.Email);
-        Assert.Equal(period, resultUser.Period);
+        Assert.Equal(userId, result.Id);
+        Assert.Equal("John", result.Names);
+        Assert.Equal("Doe", result.Surnames);
+        Assert.Equal("john@example.com", result.Email);
+        Assert.Equal(period, result.Period);
     }
 }
