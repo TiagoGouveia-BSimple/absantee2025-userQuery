@@ -16,4 +16,9 @@ public class MassTransitPublisher : IMessagePublisher
     {
         await _publishEndpoint.Publish(new UserCreatedMessage(id, names, surnames, email, periodDateTime));
     }
+
+    public async Task PublishUpdatedUserMessageAsync(Guid id, string names, string surnames, string email, PeriodDateTime periodDateTime)
+    {
+        await _publishEndpoint.Publish(new UserUpdatedMessage(id, names, surnames, email, periodDateTime));
+    }
 }

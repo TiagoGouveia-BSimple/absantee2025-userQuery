@@ -46,6 +46,7 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumer<UserCreatedConsumer>();
+    x.AddConsumer<UserUpdatedConsumer>();
 
     x.UsingRabbitMq((context, cfg) =>
     {
@@ -58,6 +59,7 @@ builder.Services.AddMassTransit(x =>
         cfg.ReceiveEndpoint("userCreatedQuery", conf =>
         {
             conf.ConfigureConsumer<UserCreatedConsumer>(context);
+            conf.ConfigureConsumer<UserUpdatedConsumer>(context);
         });
     });
 });

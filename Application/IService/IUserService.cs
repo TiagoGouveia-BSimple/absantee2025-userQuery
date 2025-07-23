@@ -13,4 +13,5 @@ public interface IUserService
     Task<UserDTO?> GetById(Guid Id);
     Task<UserDTO?> UpdateActivation(Guid Id, ActivationDTO activationDTO);
     Task<UserDTO> UpdateUser(UserDTO userDTO);
+    Task UpdateUserConsumed(Guid id, string names, string surnames, string email, PeriodDateTime periodDateTime);
 }
