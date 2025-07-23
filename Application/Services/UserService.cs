@@ -84,6 +84,21 @@ public class UserService : IUserService
 
         return null;
     }
+    public async Task<UserDTO> UpdateUser(UserDTO userDTO)
+    {
+        var User = (User?)await _userRepository.GetByIdAsync(userDTO.Id);
+
+        await _userRepository.UpdateUser(User);
+        await _userRepository.SaveChangesAsync();
+        return new UserDTO
+        {
+            Id = User.Id,
+            Names = User.Names,
+            Surnames = User.Surnames,
+            Email = User.Email,
+            Period = User.PeriodDateTime
+        };
+    }
 
     public async Task<bool> Exists(Guid Id)
     {
